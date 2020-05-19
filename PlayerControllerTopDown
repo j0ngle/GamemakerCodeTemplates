@@ -16,10 +16,14 @@ accel = 1;
 global.fric = 0.4;
 rotation = 0;
 
+
+
 //BEGIN STEP EVENT
 if (hp <= 0) {
   //Do someting
 }
+
+
 
 //STEP EVENT
 left = keyboard_check(ord("A"));
