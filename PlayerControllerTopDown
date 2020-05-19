@@ -87,4 +87,4 @@ if (place_meeting(x, y+vsp, obj_wall)) {
 
 //DRAW EVENT
 //Fixes collision issues associated with rotating against wals
-draw_sprite_ext(spr_player, 0, x, y, xscale, yscale, rot, c_white, 1);
+draw_sprite_ext(spr_player, 0, x, y, xscale, yscale, rotation, c_white, 1);
