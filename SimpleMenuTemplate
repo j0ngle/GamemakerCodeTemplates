@@ -1,0 +1,102 @@
+//CREATE EVENT
+version = "Build: 0.0.0"
+
+gui_width = display_get_gui_width();
+gui_height = display_get_gui_height();
+gui_margin = 32;
+
+menu_x = (room_width/2)   //Centers the text to the middle, horizontally
+menu_y = (room_height/2)  //Centers the text to the middle, vertically
+menu_speed = 25;
+menu_font = ft_menu;
+menu_itemHeight = font_get_size(ft_menu);
+menu_committed = -1;
+menu_control = true;
+
+//Items to be selected on the menu screen
+menu[3] = "Play"
+menu[2] = "Options"
+menu[1] = "Shop"
+menu[0] = "Quit"
+
+menu_items = array_length_1d(menu);
+menuCursor = 3;
+
+
+
+//ROOM START EVENT
+display_set_gui_size(room_width,room_height);
+audio_play_sound(menuPlaceholder,1,true);
+
+
+
+//STEP EVENT
+//Controls
+if (menu_control) {
+	if (keyboard_check_pressed(vk_up)) {
+		menuCursor += 1;
+		if (menuCursor >= menu_items) menuCursor = 0;
+	}
+	if (keyboard_check_pressed(vk_down)) {
+		menuCursor -= 1;
+		if (menuCursor < 0) menuCursor = 3;
+	}
+	if (keyboard_check_pressed(vk_enter)) || (keyboard_check_pressed(vk_space)) {
+		menu_committed = menuCursor;
+		menu_control = false;
+		//audio_stop_all();
+	}
+}
+
+if (menu_committed != -1) {
+	switch(menu_committed) {
+		case 3: {
+    //Note: "slideTransition" is a custom script
+			slideTransition(TRANS_MODE.NEXT);
+			break;
+		}
+		case 2:	{
+			slideTransition(TRANS_MODE.GOTO,rm_menuTemp);
+			break;
+		}
+		case 1: {
+			slideTransition(TRANS_MODE.GOTO,rm_menuTemp);
+			break;
+		}
+		case 0: {
+			game_end();
+			break;
+		}
+	}
+}
+
+
+
+//DRAW GUI EVENT
+draw_text(32, room_height-16, version); //Draws version number in the bottom left corner
+
+draw_set_font(ft_menu);
+draw_set_halign(fa_left);
+draw_set_valign(fa_bottom);
+for (var i=0; i<menu_items; i=i+1)
+{
+	var offset = 2;	
+	var txt = menu[i];
+	var spacing = menu_itemHeight * (i*2);
+	if (menuCursor == i)
+	{
+		txt = string_insert("* ",txt,0);
+		var col = c_white;
+	}
+	else var col = c_gray;
+	
+	var xx = menu_x;
+	var yy = menu_y - spacing;
+	draw_set_color(c_black);
+	draw_text(xx-offset,yy,txt);
+	draw_text(xx+offset,yy,txt);
+	draw_text(xx,yy-offset,txt);
+	draw_text(xx,yy+offset,txt);
+	draw_set_color(col);
+	draw_text(xx,yy,txt);
+}
