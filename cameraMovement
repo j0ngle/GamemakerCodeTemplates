@@ -1,0 +1,45 @@
+//Much of this code comes from Shaun Spalding's Youtube tutorials. It has been uploaded for my personal use
+
+//CREATE EVENT
+cam = view_camer[0];
+follow = obj_player;
+view_w_half = camera_get_view_width(cam) * 0.5;
+view_h_half = camera_get_view_height(cam) * 0.5;
+xTo = xstart;
+yTo = ystart;
+
+//The following variables are associated with a custom ScreenShake script
+//It will be included at the end of this document
+shake_length = 0;
+shake_mag = 0;
+shakd_left = 0;
+buff = 32;
+
+
+
+//STEP EVENT
+if (instance_exists(follow)) {
+  xTo = follow.x;
+  yTo = follow.y;
+}
+
+x += (xTo - x) / 25;
+y += (yTo - y) / 25;
+x = clamp(x, view_w_half + buff, room_width - view_w_half - buff);
+y = clamp(y, view_y_half + buff, room_width - view_y_half - buff);
+
+//Screen Shake
+x += random_range(-shake_left, shake_left);
+y += random_range(-shake_left, shake_left);
+shake_left = max(0, shake_left - ((1/shake_length)*shake_mag));
+
+camera_set_view_pos(cam, x - view_w_half, y - view_h_half);
+
+
+
+//SCRIPT: screenShake
+with (obj_camera) {
+  shake_mag = argument0;
+  shake_left = argument0;
+  shake_length = argument1;
+}
