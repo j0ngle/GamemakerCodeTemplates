@@ -72,13 +72,13 @@ hsp -= hspFrac;
 vsp -= vspFrac;
 
 //Collision Detection (object based)
-if (place_meeting(x+hsp, y, obj_wall) {
+if (place_meeting(x+hsp, y, obj_wall)) {
   hsp = 0;
   hspFrac = 0;
 }
 x += hsp;
 
-if (place_meeting(x, y+vsp, obj_wall) {
+if (place_meeting(x, y+vsp, obj_wall)) {
   vsp = 0;
   vspFrac = 0;
 }
