@@ -1,0 +1,87 @@
+//Note: This code came from Shaun Spalding's Youtube tutorial. I added it to Github for personal ease of access
+
+//SCRIPT: slideTransition
+/// @desc slideTransition(mode,targetRoom)
+/// @arg Mode
+/// @arg targetRoom
+
+with (obj_transition)
+	{
+		mode = argument[0];
+		if (argument_count > 1) target = argument[1];
+	}
+  
+  
+  
+//OBJECT: obj_transition
+//CREATE EVENT
+/// @description Variables
+w = display_get_gui_width();
+h = display_get_gui_height();
+h_half = h/2;
+w_half = w/2;
+
+enum TRANS_MODE { //Different states the transition can be in
+		OFF,
+		NEXT,
+		GOTO,
+		RESTART,
+		INTRO
+	}
+	
+mode = TRANS_MODE.INTRO;
+percent = 1;
+target = room;
+
+
+
+//STEP EVENT
+//Transition functions
+if (mode != TRANS_MODE.OFF) {
+		if (mode == TRANS_MODE.INTRO){
+				percent = max(0,percent-max((percent/10),.005));
+			}
+		else {
+				percent = min(1,percent+max(((1-percent)/10),.005));
+			}
+		if (percent == 1) || (percent == 0) {
+				switch(mode) {
+						case TRANS_MODE.INTRO: {
+								mode = TRANS_MODE.OFF;
+								break;
+							}
+						case TRANS_MODE.NEXT: {
+								mode = TRANS_MODE.INTRO;
+								room_goto_next();
+								break;
+							}
+						case TRANS_MODE.GOTO: {
+								mode = TRANS_MODE.INTRO;
+								room_goto(target);
+								break;
+							}
+						case TRANS_MODE.RESTART: {
+								room_restart();
+								break;
+							}
+					}
+			}
+	}
+
+
+
+//DRAW GUI EVENT
+//Visual transition effects
+//This particular implementation brings in black
+//Bars from all four sides of the screen
+if (mode != TRANS_MODE.OFF)
+	{
+    //RES_W and RES_H are global macros that store the
+    //horizontal and vertical resolution of the display
+    //These are established in obj_game
+		draw_set_color(c_black);
+		draw_rectangle(0,0,RES_W,percent*(RES_H/2),false);
+		draw_rectangle(0,RES_H,RES_W,RES_H-(percent*(RES_H/2)),false);
+		draw_rectangle(0,0,percent*(RES_W/2),RES_H,false);
+		draw_rectangle(RES_W,0,RES_W-(percent*(RES_W/2)),RES_H,false);
+	}
