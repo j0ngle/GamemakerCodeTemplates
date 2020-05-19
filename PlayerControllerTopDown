@@ -1,0 +1,80 @@
+//CREATE EVENT
+xscale = 1;
+yscale = 1;
+image_xscale = xscale;
+image_yscale = yscale;
+
+maxHealth = 20;
+hp = maxHealth;
+
+maxSpd = 5;
+hsp = 0;
+vsp = 0;
+hspFrac = 0;
+vspFrac = 0;
+accel = 1;
+global.fric = 0.4;
+rotation = 0;
+
+//BEGIN STEP EVENT
+if (hp <= 0) {
+  //Do someting
+}
+
+//STEP EVENT
+left = keyboard_check(ord("A"));
+right = keyboard_check(ord("D"));
+up = keyboard_check(ord("W"));
+down = keyboard_check(ord("S"));
+
+//USE THIS LINE OF CODE FOR MOUSE-BASED ROTATION
+if ((hsp != 0) || (vsp != 0)) srite_index = spr_playerMove;
+else sprite_index = spr_playerStill;
+
+image_angle = point_direction(x, y, mouse_x, mouse_y);
+
+//USE THESE LINES OF CODE FOR MOVEMENT BASED ROTATION
+if ((hsp > 0) && (vsp == 0)) sprite_index = spr_moveRight;     //-->
+if ((hsp > 0) && (vsp < 0))  sprite_index = spr_moveDownRight; //v->
+if ((hsp == 0) && (vsp < 0)) sprite_index = spr_moveDown;      //vvv
+if ((hsp < 0) && (vsp < 0))  sprite_index = spr_moveDownLeft;  //v<-
+if ((hsp < 0) && (vsp == 0)) sprite_index = spr_moveLeft;      //<--
+if ((hsp < 0) && (vsp > 0))  sprite_index = spr_moveUpLeft;    //^<-
+if ((hsp == 0) && (vsp > 0)) sprite_index = spr_moveUp;        //^^^
+if ((hsp > 0) && (vsp > 0))  sprite_index = spr_moveUpRight;   //^->
+if ((hsp == 0) && (vsp == 0))sprite_index = spr_playerStill;   //---
+
+var dirX = right - left;
+hsp += dirX * accel;
+var dirY = down - up;
+vsp += dirY * accel;
+
+if (dirX == 0) {
+  //Note: "approach" is a custom function, not built into GM
+  hsp = approach(hsp, 0, global.fric);
+}
+hsp = clamp(hsp, -maxSpd, maxSpd);
+if (dirY == 0) {
+  vsp = approach(vsp, 0, global.fric);
+}
+vsp = clamp(vsp, -maxSpd, maxSpd);
+
+//Converting Decimals to Integers
+hsp += hspFrac;
+vsp += vspFrac;
+hspFrac = frac(hsp);
+vspFrac = frac(vsp);
+hsp -= hspFrac;
+vsp -= vspFrac;
+
+//Collision Detection (object based)
+if (place_meeting(x+hsp, y, obj_wall) {
+  hsp = 0;
+  hspFrac = 0;
+}
+x += hsp;
+
+if (place_meeting(x, y+vsp, obj_wall) {
+  vsp = 0;
+  vspFrac = 0;
+}
